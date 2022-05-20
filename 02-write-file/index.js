@@ -4,12 +4,12 @@ const { stdin, exit, stdout } = process;
 
 let createdFile = fs.createWriteStream('./02-write-file/text.txt');
 
-stdout.write('Введите текст:\n');
+stdout.write('Enter the text:\n');
 
 stdin.on('data', data => {
   let textForInput = data.toString();
   if (textForInput.trim() === 'exit') {
-    stdout.write('Good luck for evryone!');
+    stdout.write('Good luck evryone!');
     exit();
   } else {
     createdFile.write(data);
@@ -17,6 +17,6 @@ stdin.on('data', data => {
 });
 
 process.on('SIGINT', () => {
-  stdout.write('Good luck for evryone!'); 
+  stdout.write('Good luck evryone!'); 
   process.exit();
 });
