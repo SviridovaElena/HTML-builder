@@ -1,24 +1,21 @@
-const {readdir} = require ('fs/promises');
-const {stat} = require ('fs');
-const path = require('node:path');
+const path = require('path');
+const fs = require('fs');
 
-const scaningDir = path.join(__dirname, 'secret-folder');
+const secretFolderPath = path.join(__dirname, 'secret-folder');
 
-(async function (dir) {
-  try {
-    const arrOfFiles = await readdir(dir, {withFileTypes: true});
-    arrOfFiles.forEach(el => {
-      if (el.isFile()) {
-        let output = el.name.split('.');
-        const absPathToFile = path.resolve(__dirname, 'secret-folder', el.name);
-        stat(absPathToFile, (err, stats) => {
+fs.readdir(secretFolderPath, {withFileTypes: true}, (err, files) => {
+  if (err) {
+    throw err;
+  } else {
+    console.log('\nCurrent directory filenames:');
+    files.forEach(file => {
+      if (file.isFile()) {
+        const filePath = path.join(secretFolderPath, file.name);
+        fs.stat(filePath, (err, stats) => {
           if (err) throw err;
-          output.push(stats.size + 'b');
-          console.log(output.join(' - '));
+          console.log(`${path.parse(filePath).name} - ${path.extname(filePath).slice(1)} - ${Math.round(stats.size/1000)}kb`);
         });
       }
     });
-  } catch (error) {
-    console.error('there was an error:', error.message, error);
   }
-})(scaningDir);
+});
